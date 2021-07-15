@@ -1,0 +1,7 @@
+/**/node_modules/
+/**/package-lock.json
+/**/ttttest.*
+/.idea/
+/atlassian-ide-plugin.xml
+/tmp/
+/var/*.pid

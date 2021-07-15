@@ -1,0 +1,25 @@
+{
+  "name": "@flancer64/habr_teqfw_web",
+  "version": "0.1.0",
+  "description": "Demo package for the Habr publication.",
+  "type": "module",
+  "homepage": "https://habr.com/ru/post/567630/",
+  "license": "AGPL-3.0-only",
+  "author": {
+    "name": "Alex Gusev",
+    "email": "alex@flancer64.com",
+    "url": "https://github.com/flancer64"
+  },
+  "repository": "github:flancer64/habr_teqfw_web",
+  "scripts": {
+    "help": "node ./bin/tequila.mjs",
+    "start": "node ./bin/tequila.mjs web-server-start",
+    "startup-logs": "node ./bin/tequila.mjs core-startup-logs",
+    "stop": "node ./bin/tequila.mjs web-server-stop",
+    "version": "node ./bin/tequila.mjs core-version"
+  },
+  "dependencies": {
+    "@teqfw/web": "github:teqfw/web",
+    "jquery": "*"
+  }
+}

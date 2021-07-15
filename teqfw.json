@@ -1,0 +1,14 @@
+{
+  "di": {
+    "autoload": {
+      "ns": "Fl64_Habr_Web",
+      "path": "./src"
+    }
+  },
+  "web": {
+    "root": "demo",
+    "statics": {
+      "jq": "/jquery/dist/"
+    }
+  }
+}
