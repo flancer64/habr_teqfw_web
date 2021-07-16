@@ -19,7 +19,7 @@
     "version": "node ./bin/tequila.mjs core-version"
   },
   "dependencies": {
-    "@teqfw/web": "github:teqfw/web",
+    "@teqfw/web": "*",
     "jquery": "*"
   }
 }
