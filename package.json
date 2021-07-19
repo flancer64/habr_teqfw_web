@@ -1,9 +1,9 @@
 {
   "name": "@flancer64/habr_teqfw_web",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Demo package for the Habr publication.",
   "type": "module",
-  "homepage": "https://habr.com/ru/post/567630/",
+  "homepage": "https://habr.com/ru/post/568044/",
   "license": "AGPL-3.0-only",
   "author": {
     "name": "Alex Gusev",
@@ -19,7 +19,6 @@
     "version": "node ./bin/tequila.mjs core-version"
   },
   "dependencies": {
-    "@teqfw/web": "*",
-    "jquery": "*"
+    "@teqfw/web": "github:teqfw/web"
   }
 }

@@ -2,17 +2,112 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Demo for Tequila Framework web-plugin usage.">
-    <title>TeqFW: Web Demo</title>
+    <title>Demo Services</title>
+    <link rel="stylesheet" href="css/boot.css" type="text/css">
+    <script>
+        // DEFINE WORKING VARS / PROPS
+        const DOOR = '';
+        const URL_API_LOAD_CFG = `./api/@teqfw/web/load/config`;
+        const URL_API_LOAD_NS = `./api/@teqfw/web/load/namespaces`;
+        const URL_SRC_DI = './src/@teqfw/di/Shared/Container.mjs';
+
+        // DEFINE INNER FUNCTIONS
+        async function bootstrap() {
+            // DEFINE INNER FUNCTIONS
+            /**
+             * Import code, create and setup Dependency Injection container for frontend,
+             * @returns {Promise<TeqFw_Di_Shared_Container>}
+             */
+            async function initDiContainer() {
+                // DEFINE INNER FUNCTIONS
+                /**
+                 * Load DI namespaces using regular 'fetch'.
+                 * @returns {Promise<TeqFw_Web_Shared_Service_Route_Load_Namespaces.Response>}
+                 */
+                async function loadNamespaces() {
+                    // load frontend configuration and user profile
+                    const res = await fetch(URL_API_LOAD_NS);
+                    const json = await res.json();
+                    return json.data;
+                }
+
+                // MAIN FUNCTIONALITY
+                console.log('DI container init.');
+                // create and setup DI Container
+                const {default: Container} = await import(URL_SRC_DI);
+                /** @type {TeqFw_Di_Shared_Container} */
+                const container = new Container();
+                const response = await loadNamespaces();
+                // setup namespaces mapping
+                const baseUrl = `${location.origin}${DOOR}`;
+                if (response && Array.isArray(response.items))
+                    for (const item of response.items)
+                        container.addSourceMapping(item.ns, baseUrl + item.path, true, item.ext);
+                // setup replaces
+                if (response && Array.isArray(response.replaces))
+                    for (const item of response.replaces)
+                        container.addModuleReplacement(item.orig, item.alter);
+                //
+                return container;
+            }
+
+            /**
+             * Load frontend configuration from API using simple 'fetch' and place it into DI container.
+             *
+             * @param {TeqFw_Di_Shared_Container} container
+             */
+            async function initConfig(container) {
+                const res = await fetch(URL_API_LOAD_CFG);
+                const json = await res.json();
+                /** @type {TeqFw_Web_Front_Api_Dto_Config.Factory} */
+                const fConfig = await container.get('TeqFw_Web_Front_Api_Dto_Config#Factory$');
+                /** @type {TeqFw_Web_Front_Api_Dto_Config} */
+                const result = fConfig.create(json.data);
+                result.door = DOOR;
+                result.urlBase = result.urlBase ?? location.origin.replace(/^https?:\/\//, '');
+                container.set('TeqFw_Web_Front_Api_Dto_Config$', result);
+            }
+
+            // MAIN FUNCTIONALITY
+            try {
+                const container = await initDiContainer();
+                await initConfig(container);
+                // get some frontend model as singleton, load data from server and print it
+                /** @type {Fl64_Habr_Web_Front_Module} */
+                const model = await container.get('Fl64_Habr_Web_Front_Module$');
+                await model.loadPlugins();
+                model.printOut('display');
+
+            } catch (e) {
+                console.error("Error in bootstrap: " + e + "\n" + e.stack);
+            }
+        }
+
+        // MAIN FUNCTIONALITY
+        self.addEventListener("load", async () => {
+            console.log('Page is loaded. Start the front application.');
+            await bootstrap();
+            console.log('Started.');
+        });
+    </script>
 </head>
 <body>
-<h1>App Home</h1>
-<ul>
-    <li><a href="admin/">'admin' door</a></li>
-    <li><a href="pub/">'pub' door</a></li>
-    <li>automatic mapping: <a href="src/@flancer64/habr_teqfw_web/Front/Module.mjs">es6-module</a> (from the project)</li>
-    <li>manual mapping: <a href="src/jq/jquery.js">jquery</a> (from ./node_modules/)</li>
-</ul>
+<div>Namespaces:</div>
+
+<ol id="display"></ol>
+
+<!-- error handler -->
+<div id="errorDisplay"></div>
+<script>
+    window.onerror = function (message, source, lineno, colno, error) {
+        const display = document.getElementById('errorDisplay');
+        display.textContent = message + ' / ' + source + ' / ' + error;
+    }
+    console.log('error display is created.');
+</script>
+
+<!-- These styles are loaded after landing page is displayed -->
+<link rel="stylesheet" href="css/main.css">
 
 </body>
 </html>
