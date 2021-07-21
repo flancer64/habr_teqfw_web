@@ -19,6 +19,6 @@
     "version": "node ./bin/tequila.mjs core-version"
   },
   "dependencies": {
-    "@teqfw/http2": "github:teqfw/http2"
+    "@teqfw/http2": "*"
   }
 }
